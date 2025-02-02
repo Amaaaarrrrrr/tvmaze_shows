@@ -27,7 +27,7 @@ const FilterBar = ({ onFilter }) => {
         <option value="Action">Action</option>
         <option value="Horror">Horror</option>
         <option value="Romance">Romance</option>
-        {/* Add more genres as needed */}
+      
       </select>
 
       <select
@@ -39,7 +39,7 @@ const FilterBar = ({ onFilter }) => {
         <option value="7">7+</option>
         <option value="8">8+</option>
         <option value="9">9+</option>
-        {/* Add more rating filters as needed */}
+        
       </select>
     </div>
   );
