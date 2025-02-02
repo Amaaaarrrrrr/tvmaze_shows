@@ -80,9 +80,8 @@ const ShowDetails = () => {
           </>
         )}
       </div>
-
-      <GoHomeButton /> 
-    </div>
+       <GoHomeButton /> 
+      </div>
   );
 };
 
