@@ -1,21 +1,48 @@
-import React from "react";
+import React, { useState } from "react";
 
-function FilterBar({ genres, onFilter }) {
-  // Render a dropdown menu with the list of genres
+const FilterBar = ({ onFilter }) => {
+  const [selectedGenre, setSelectedGenre] = useState("");
+  const [selectedRating, setSelectedRating] = useState("");
+
+  const handleGenreChange = (e) => {
+    setSelectedGenre(e.target.value);
+    onFilter(e.target.value, selectedRating);
+  };
+
+  const handleRatingChange = (e) => {
+    setSelectedRating(e.target.value);
+    onFilter(selectedGenre, e.target.value);
+  };
+
   return (
-    <div>
-      <h3>Filter by Genre</h3>
-      <select onChange={(e) => onFilter(e.target.value)} defaultValue="">
-        <option value="">Select Genre</option>
-        {/* Loop through the genres and create an option for each */}
-        {genres.map((genre, index) => (
-          <option key={index} value={genre}>
-            {genre}
-          </option>
-        ))}
+    <div className="filter-bar">
+      <select
+        value={selectedGenre}
+        onChange={handleGenreChange}
+        className="filter-select"
+      >
+        <option value="">All Genres</option>
+        <option value="Comedy">Comedy</option>
+        <option value="Drama">Drama</option>
+        <option value="Action">Action</option>
+        <option value="Horror">Horror</option>
+        <option value="Romance">Romance</option>
+        {/* Add more genres as needed */}
+      </select>
+
+      <select
+        value={selectedRating}
+        onChange={handleRatingChange}
+        className="filter-select"
+      >
+        <option value="">All Ratings</option>
+        <option value="7">7+</option>
+        <option value="8">8+</option>
+        <option value="9">9+</option>
+        {/* Add more rating filters as needed */}
       </select>
     </div>
   );
-}
+};
 
 export default FilterBar;

@@ -1,35 +1,25 @@
 import React from "react";
+import ShowCard from "./ShowCard";  // Import ShowCard component
+import GoHomeButton from "./GoHomeButton";
 
-function FavoriteList({ shows, favorites, onToggleFavorite }) {
+const FavoriteList = ({ favorites, onToggleFavorite }) => {
   return (
     <div className="favorite-list">
-      <h2>Your Favorite TV Shows</h2>
       {favorites.length === 0 ? (
-        <p>No favorites selected yet.</p>
+        <p>No favorite shows added yet.</p> // If no favorites, display this message
       ) : (
-        <ul>
-          {favorites.map((show) => (
-            <li key={show.id}>
-              {show.name}
-              <button onClick={() => onToggleFavorite(show)}>:star: Remove</button>
-            </li>
-          ))}
-        </ul>
+        favorites.map((show) => (
+          <ShowCard
+            key={show.id}
+            show={show}
+            onToggleFavorite={onToggleFavorite}
+            isFavorite={true} // Indicate it's a favorite
+          />
+        ))
       )}
-
-  <h3>All TV Shows</h3>
-  <ul>
-    {shows.map((show) => (
-      <li key={show.id}>
-        {show.name}
-        <button onClick={() => onToggleFavorite(show)}>
-          {favorites.some((fav) => fav.id === show.id) ? "⭐ Remove" : "☆ Add"}
-        </button>
-      </li>
-    ))}
-  </ul>
-</div>
+       <GoHomeButton /> {/* Add the GoHomeButton component */}
+    </div>
   );
-}
+};
 
 export default FavoriteList;
