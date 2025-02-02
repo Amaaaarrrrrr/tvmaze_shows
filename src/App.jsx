@@ -1,77 +1,104 @@
-import React, { useState, useEffect } from 'react';
-import Navbar from './Navbar.jsx';
-import SearchBar from './SearchBar.jsx';
-import FilterBar from './FilterBar.jsx';
-import ShowList from './ShowList.jsx';
-import FavoriteList from './FavoriteList.jsx';
-import './App.css'; 
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import NavBar from "./components/NavBar";
+import SearchBar from "./components/SearchBar";
+import FilterBar from "./components/FilterBar";
+import ShowList from "./components/ShowList";
+import FavoriteList from "./components/FavoriteList";
+import ShowDetails from "./components/ShowDetails";
 
 const App = () => {
   const [shows, setShows] = useState([]);
   const [favorites, setFavorites] = useState([]);
-  const [query, setQuery] = useState('');
-  const [genre, setGenre] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredShows, setFilteredShows] = useState([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const fetchShows = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`https://api.tvmaze.com/search/shows?q=${query}`);
-      const data = await response.json();
-      const filteredShows = genre ? data.filter(show => show.show.genres.includes(genre)) : data;
-      setShows(filteredShows);
-    } catch (error) {
-      console.error('Error fetching shows:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSearch = (searchQuery) => {
-    setQuery(searchQuery);
-  };
-
-  const handleFilter = (selectedGenre) => {
-    setGenre(selectedGenre);
-  };
-
-  const handleFavoriteToggle = (show) => {
-    setFavorites(prevFavorites =>
-      prevFavorites.some(fav => fav.id === show.id)
-        ? prevFavorites.filter(fav => fav.id !== show.id)
-        : [...prevFavorites, show]
-    );
-  };
-
-  const handleToggleDarkMode = (newMode) => {
-    setIsDarkMode(newMode);
-  };
+  const [selectedGenre, setSelectedGenre] = useState("");
+  const [selectedRating, setSelectedRating] = useState("");
 
   useEffect(() => {
-    if (query) {
-      fetchShows();
+    const fetchShows = async () => {
+      try {
+        const response = await fetch("https://api.tvmaze.com/shows");
+        const data = await response.json();
+        setShows(data);
+        setFilteredShows(data);
+      } catch (error) {
+        console.error("Error fetching shows:", error);
+      }
+    };
+    fetchShows();
+  }, []);
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    const filtered = shows.filter((show) =>
+      show.name.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredShows(filtered);
+  };
+
+  const toggleFavorite = (show) => {
+    if (favorites.some((fav) => fav.id === show.id)) {
+      setFavorites(favorites.filter((fav) => fav.id !== show.id));
+    } else {
+      setFavorites([...favorites, show]);
     }
-  }, [query, genre]);
+  };
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  const handleFilter = (genre, rating) => {
+    setSelectedGenre(genre);
+    setSelectedRating(rating);
+
+    let filtered = shows;
+
+    if (genre) {
+      filtered = filtered.filter((show) => show.genres.includes(genre));
+    }
+    if (rating) {
+      filtered = filtered.filter((show) => show.rating.average && show.rating.average >= parseFloat(rating));
+    }
+
+    setFilteredShows(filtered);
+  };
 
   return (
-    <div className={isDarkMode ? 'dark' : 'light'}>
-      <Navbar onToggleDarkMode={handleToggleDarkMode} isDarkMode={isDarkMode} />
-      <div className="main-content">
-        <SearchBar onSearch={handleSearch} />
-        <FilterBar genres={['Drama', 'Comedy', 'Action', 'Romance']} onFilter={handleFilter} />
-        <ShowList
-          shows={shows}
-          onFavoriteToggle={handleFavoriteToggle}
-          isLoading={isLoading}
-        />
-        <FavoriteList
-          shows={shows}
-          favorites={favorites}
-          onToggleFavorite={handleFavoriteToggle}
-        />
+    <Router>
+      <div className={isDarkMode ? "dark-mode" : "light-mode"}>
+        <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+
+        
+        <Link to="/favorites">
+          <button className="button_home">Go to Favorite Shows</button>
+        </Link>
+
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <SearchBar searchQuery={searchQuery} onSearch={handleSearch} />
+                <FilterBar onFilter={handleFilter} />
+                <ShowList
+                  shows={filteredShows}
+                  onToggleFavorite={toggleFavorite}
+                  favorites={favorites}
+                />
+              </>
+            }
+          />
+          <Route
+            path="/favorites"
+            element={<FavoriteList favorites={favorites} onToggleFavorite={toggleFavorite} />}
+          />
+          <Route path="/show/:id" element={<ShowDetails />} />
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
 };
 

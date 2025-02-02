@@ -1,67 +1,87 @@
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import GoHomeButton from "./GoHomeButton";
 
 const ShowDetails = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [show, setShow] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { id } = useParams(); 
+  const navigate = useNavigate(); 
+  const [showDetails, setShowDetails] = useState(null); 
+  const [loading, setLoading] = useState(true); 
+  const [error, setError] = useState(null); 
 
   useEffect(() => {
-    let isMounted = true; // Prevent state updates if component unmounts
-
     const fetchShowDetails = async () => {
       try {
         const response = await fetch(`https://api.tvmaze.com/shows/${id}`);
-        if (!response.ok) throw new Error("Failed to fetch show details.");
-        
+        if (!response.ok) {
+          throw new Error("Failed to fetch show details");
+        }
         const data = await response.json();
-        if (isMounted) {
-          setShow(data);
-          setIsLoading(false);
-        }
+        setShowDetails(data);
       } catch (err) {
-        if (isMounted) {
-          setError(err.message);
-          setIsLoading(false);
-        }
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchShowDetails();
+  }, [id]); 
 
-    return () => {
-      isMounted = false; // Cleanup function
-    };
-  }, [id]);
+  if (loading) {
+    return <div className="loading">Loading...</div>; 
+  }
 
-  if (isLoading) return <p className="loading">Loading show details... ⌛️</p>;
-  if (error) return <p className="error">{error}</p>;
+  if (error) {
+    return <div className="error">Error: {error}</div>; 
+  }
 
+ 
   return (
     <div className="show-details">
-      <button className="back-button" onClick={() => navigate(-1)}>⬅ Back</button>
+      <h2>{showDetails.name}</h2>
       
-      <h1>{show.name}</h1>
       <img 
-        src={show.image?.original || "https://via.placeholder.com/400"} 
-        alt={show.name} 
-        className="show-image"
+        src={showDetails.image?.medium || 'default-image-url'} 
+        alt={showDetails.name || 'No Image Available'} 
       />
-      <p className="summary">
-        {show.summary ? show.summary.replace(/<[^>]+>/g, "") : "No summary available."}
-      </p>
       
-      <div className="show-info">
-        <p>🌍 Language: {show.language || "Unknown"}</p>
-        <p>🎭 Type: {show.type || "N/A"}</p>
-        <p>⏳ Runtime: {show.averageRuntime ? `${show.averageRuntime} min` : "N/A"}</p>
-        <p>📅 Premiered: {show.premiered || "N/A"}</p>
-        {show.officialSite && (
-          <p>🔗 <a href={show.officialSite} target="_blank" rel="noopener noreferrer">Official Site</a></p>
+      <div className="show-summary">
+        <p dangerouslySetInnerHTML={{ __html: showDetails.summary }} />
+      </div>
+
+      <div className="show-meta">
+        <p><strong>Genres:</strong> {showDetails.genres.join(", ")}</p>
+        <p><strong>Rating:</strong> {showDetails.rating.average}</p>
+        <p><strong>Language:</strong> {showDetails.language}</p>
+      </div>
+
+      <div className="external-links">
+        {showDetails.externals && (
+          <>
+            {showDetails.externals.wikipedia && (
+              <a 
+                href={`https://en.wikipedia.org/wiki/${showDetails.externals.wikipedia}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                Wikipedia
+              </a>
+            )}
+            {showDetails.externals.imdb && (
+              <a 
+                href={`https://www.imdb.com/title/${showDetails.externals.imdb}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                IMDB
+              </a>
+            )}
+          </>
         )}
       </div>
+
+      <GoHomeButton /> 
     </div>
   );
 };
