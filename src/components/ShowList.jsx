@@ -51,11 +51,19 @@ const ShowList = ({ shows, onToggleFavorite, favorites }) => {
       {/* Pagination Buttons */}
       <div className="pagination">
         <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)}>
+<<<<<<< HEAD
           Previous
         </button>
         <span>Page {currentPage} of {totalPages}</span>
         <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>
           Next
+=======
+        ⏮️Previous
+        </button>
+        <span>Page {currentPage} of {totalPages}</span>
+        <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)}>
+          Next⏭️
+>>>>>>> eef966c (final development)
         </button>
       </div>
     </div>

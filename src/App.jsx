@@ -71,9 +71,15 @@ const App = () => {
       <div className={isDarkMode ? "dark-mode" : "light-mode"}>
         <NavBar isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
 
+<<<<<<< HEAD
         
         <Link to="/favorites">
           <button className="button_home">Go to Favorite Shows</button>
+=======
+        {/* Button to go to the favorites page */}
+        <Link to="/favorites">
+          <button>Go to Favorite Shows</button>
+>>>>>>> eef966c (final development)
         </Link>
 
         <Routes>

@@ -11,7 +11,11 @@ const SearchBar = ({ searchQuery, onSearch }) => {
         type="text"
         value={searchQuery}
         onChange={handleInputChange}
+<<<<<<< HEAD
         placeholder="Search for a show..."
+=======
+        placeholder="🔍                  Search for a show..."
+>>>>>>> eef966c (final development)
         className="search-input"
       />
     </div>

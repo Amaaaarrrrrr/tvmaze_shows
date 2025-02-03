@@ -3,11 +3,19 @@ import { useParams, useNavigate } from "react-router-dom";
 import GoHomeButton from "./GoHomeButton";
 
 const ShowDetails = () => {
+<<<<<<< HEAD
   const { id } = useParams(); 
   const navigate = useNavigate(); 
   const [showDetails, setShowDetails] = useState(null); 
   const [loading, setLoading] = useState(true); 
   const [error, setError] = useState(null); 
+=======
+  const { id } = useParams(); // Get the show ID from the URL
+  const navigate = useNavigate(); // Hook to navigate between routes
+  const [showDetails, setShowDetails] = useState(null); // State to store show details
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+>>>>>>> eef966c (final development)
 
   useEffect(() => {
     const fetchShowDetails = async () => {
@@ -26,6 +34,7 @@ const ShowDetails = () => {
     };
 
     fetchShowDetails();
+<<<<<<< HEAD
   }, [id]); 
 
   if (loading) {
@@ -37,6 +46,19 @@ const ShowDetails = () => {
   }
 
  
+=======
+  }, [id]); // Re-fetch data if the `id` changes
+
+  if (loading) {
+    return <div className="loading">Loading...</div>; // Loading message
+  }
+
+  if (error) {
+    return <div className="error">Error: {error}</div>; // Error message
+  }
+
+  // If show details are available, render them
+>>>>>>> eef966c (final development)
   return (
     <div className="show-details">
       <h2>{showDetails.name}</h2>
@@ -80,8 +102,14 @@ const ShowDetails = () => {
           </>
         )}
       </div>
+<<<<<<< HEAD
         <GoHomeButton /> 
       </div>
+=======
+
+      <GoHomeButton /> {/* Add the GoHomeButton component */}
+    </div>
+>>>>>>> eef966c (final development)
   );
 };
 

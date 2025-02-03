@@ -27,7 +27,11 @@ const FilterBar = ({ onFilter }) => {
         <option value="Action">Action</option>
         <option value="Horror">Horror</option>
         <option value="Romance">Romance</option>
+<<<<<<< HEAD
       
+=======
+       
+>>>>>>> eef966c (final development)
       </select>
 
       <select
